@@ -10,20 +10,23 @@
 import can
 import time
 import os
+import sys
 import queue
 from threading import Thread
 c                      = ''
 count                  = 0  
 # CAN Id's
 SWC                    = 0x2F2 
-SWM                    = 0x2EC 
+SWM                    = 0x2EC
+ICC                    = 0x2FC 
 # SWC Button CAN Data
 SWC_SEEK               = (0x08, 0x09, 0x0C, 0x0D)  # seek button on bit [7] of id 0x2f2
 SWC_VOLUP              = (0x10, 0x11, 0x14, 0x15)  # volume + button on bit [7] of id 0x2f2
 SWC_VOLDOWN            = (0x18, 0x19, 0x1C, 0x1D)  # volume - button on bit [7] of id 0x2f2
 SWC_PHONE              = (0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, )  # phone button on bit [6] of id 0x2f2
 SWC_MODE               = (0x10)
-AuxillaryMode          =(0x41, 0xC1)
+AuxillaryMode          = (0x41, 0xC1)
+RadioPhoneMode         = (0x43, 0x44, 0x45, 0x47, 0x48, 0xC3, 0xC4, 0xC5, 0xC7, 0xC8)
 def scroll():
     #prints logo to console
         print('  ')
@@ -72,9 +75,10 @@ def msgbuffer():
         message = bus.recv()          # if recieving can frames then put these can arb id's into a queue
         if message.arbitration_id == SWC:                        
             q.put(message)
-        if message.arbitration_id == SWM:                        
-            q.put(message)
-                        
+        #if message.arbitration_id == SWM:                        
+        #   q.put(message)
+        #if message.arbitration_id == ICC:                        
+        #    q.put(message)
 def main(): 
     global message, bus, q, SWC, SWC_SEEK, SWC_VOLUP, SWC_VOLDOWN, SWC_PHONE, AuxillaryMode
     try:
@@ -84,27 +88,39 @@ def main():
                     pass
                 message = q.get()   
                 c = '{0:f},{1:d},'.format(message.timestamp,count)
-                if message.arbitration_id == SWC and message.data[7] in SWC_SEEK:
-                    os.system("sudo bash /home/pi/rpotify.sh next")
-                    print("SWCSeekBtn pushed @", message.timestamp) 
-                        
+                if message.arbitration_id == SWC and message.data[6] in AuxillaryMode:
+                    os.system("./rpotify.sh play")
+                    os.system("./rpotify.sh status")
+                    print("AuxillaryMode Active @", message.timestamp)                    
+                    time.sleep(0.5)
+                
+                elif message.arbitration_id == SWC and message.data[7] in SWC_SEEK:
+                    os.system("./rpotify.sh next")
+                    print("SWCSeekBtn pushed @", message.timestamp)
+                    time.sleep(0.5)
+                                                  
                 elif message.arbitration_id == SWC and message.data[7] in SWC_VOLUP:
-                    os.system("sudo bash /home/pi/rpotify.sh up")
+                    os.system("./rpotify.sh up")
                     print("SWCVolUpBtn pushed @", message.timestamp)
+                    time.sleep(0.5)
                         
                 elif message.arbitration_id == SWC and message.data[7] in SWC_VOLDOWN:  
-                    os.system("sudo bash /home/pi/rpotify.sh down") 
+                    os.system("./rpotify.sh down") 
                     print("SWCVolDownBtn pushed @", message.timestamp)
+                    time.sleep(0.5)
                     
                 elif message.arbitration_id == SWC and message.data[6]  in SWC_PHONE:
-                    os.system("sudo bash /home/pi/rpotify.sh play")
-                    os.system("sudo bash /home/pi/rpotify.sh status")
+                    os.system("./rpotify.sh play")
+                    os.system("./rpotify.sh status")
                     print("SWCPhoneBtn pushed @", message.timestamp)                    
-                elif message.arbitration_id == SWC and message.data[6] in AuxillaryMode:
-                    os.system("sudo bash /home/pi/rpotify.sh play")
-                    os.system("sudo bash /home/pi/rpotify.sh status")
-                    print("SWCPhoneBtn pushed @", message.timestamp)                    
-                
+                    time.sleep(0.5)
+
+                if message.arbitration_id == SWC and message.data[6] in RadioPhoneMode:
+                    os.system("./rpotify.sh stop")
+                    print("FM Radio or Phone Call Active @", message.timestamp)                    
+                    time.sleep(0.5)
+                 
+                    
                 else:
                     pass        
                                                                            
