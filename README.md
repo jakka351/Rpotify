@@ -1,10 +1,9 @@
-#Rpotify
+# Rpotify controlling Raspotify with Steering Wheel Controls via CANBus.
 
 Rpotify is a tool for managing Spotify remotely without GUI, only by CLI.
+Combining [`Raspotify`](https://github.com/dtcooper/raspotify) and [`can0swc`](https://github.com/jakka351/can0swc) and [`Rpotify`](https://github.com/Madh93/Rpotify) gives me wireless audio playing from my phone to my auxillary port, controlled by the steering wheel controls in my car.
 
-![Alt text](http://oi58.tinypic.com/296hlqq.jpg "Sample of Rpotify")
-
-##Features
+## Features
 
 **Current features:**
 
@@ -16,28 +15,9 @@ Rpotify is a tool for managing Spotify remotely without GUI, only by CLI.
 - Information track
 - Search song/album/artist
 
-**Future features:**
+### Dependencies
 
-- Order searches
-- Access to personal lists
-- Download track/cover
-- ...
-
-##How to install
-
-###Dependencies
-
-For Volume up/down and Shuffle/Repeat is necessary xdotool:
-
-    sudo apt-get install xdotool
-
-To search music is necessary:
-
-- [Ruby](https://github.com/ruby/ruby)
-- [rspotify gem](https://github.com/guilhermesad/rspotify)
-- [terminal-table gem](https://github.com/tj/terminal-table)
-
-###Install
+### Install
 
 Download, extract and launch:
 
@@ -45,12 +25,8 @@ Download, extract and launch:
     unzip rpotify.zip && cd Rpotify-master
     ./rpotify.sh
 
-##How to use
+### How to use
 
 To list all commands:
 
     ./rpotify.sh help
-
-To search music:
-
-    ./rpotify.sh search [[-s|--song]|[--album]|[-a|--artist]] text_search
