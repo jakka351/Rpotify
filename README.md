@@ -1,5 +1,8 @@
 # Rpotify controlling Raspotify with Steering Wheel Controls via CANBus.
 
+ <a href="https://testerpresent.com.au/"><img src="https://img.shields.io/badge/Tester Present -Specialist Automotive Solutions-blue" /></a>    
+
+
 Rpotify is a tool for managing Spotify remotely without GUI, only by CLI.  
 
 ### Combining [`Raspotify`](https://github.com/dtcooper/raspotify) and [`can0swc`](https://github.com/jakka351/can0swc) and [`Rpotify`](https://github.com/Madh93/Rpotify) gives me wireless audio playing from my phone to my auxillary port, controlled by the steering wheel controls in my car.
